@@ -1,8 +1,17 @@
 # hubot-lunchroulette
 
-A client for the popular lunch roulette.
+A client for kickstarters lunchroulette.
 
-See [`src/lunchroulette.coffee`](src/lunchroulette.coffee) for full documentation.
+See [`src/lunchroulette.js`](src/lunchroulette.js) for full documentation.
+
+## WIP
+I'm currently working on this software and as you see there is a lot to do. ;)
+
+## TODO's
+- ~~create a chat dialog that let users join in the roulette~~
+- create a CSV file of all joined users
+- process file with the lunch roulette script
+- return lunch groups to chat
 
 ## Installation
 
