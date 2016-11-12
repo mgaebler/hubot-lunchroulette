@@ -1,28 +1,23 @@
 {
   "name": "hubot-lunchroulette",
-  "description": "A client for the popular lunch roulette.",
+  "description": "A client for kickstarters lunch roulette.",
   "version": "0.0.0",
   "author": "Marian Gaebler <marian.gaebler@gmail.com>",
   "license": "MIT",
-
   "keywords": "hubot, hubot-scripts, lunchroulette",
-
   "repository": {
     "type": "git",
     "url": "git://github.com/hubot-scripts/hubot-lunchroulette.git"
   },
-
   "bugs": {
     "url": "https://github.com/hubot-scripts/hubot-lunchroulette/issues"
   },
-
   "dependencies": {
+    "game-drawer": "^0.1.0"
   },
-
   "peerDependencies": {
     "hubot": "2.x"
   },
-
   "devDependencies": {
     "hubot-test-helper": "^1.3.0",
     "chai": "^2.1.1",
@@ -38,9 +33,7 @@
     "sinon": "^1.13.0",
     "sinon-chai": "^2.7.0"
   },
-
   "main": "index.coffee",
-
   "scripts": {
     "test": "grunt test"
   }

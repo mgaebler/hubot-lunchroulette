@@ -15,8 +15,8 @@
  */
 
 
-const LR = require('drawer')
-const phrases = require('../phrases')
+const LR = require('game-drawer')
+const phrases = require('./phrases_de')
 
 
 var lr; // make it global available
@@ -112,5 +112,5 @@ module.exports = (robot) => {
   robot.respond(/fake roulette/i, res => {
     lr.endGame()
   })
-  
+
 }
