@@ -43,10 +43,10 @@ module.exports = (robot) => {
     res.send (res.random (phrases.status))
   })
 
-  // roulette
+  // roulette / starts the game
   robot.respond(/roulette/i, res => {
 
-    lr = new LR(3, 5)
+    lr = new LR(groupSize=3, duration=5)
 
     lr.on('addPlayer', user => {
       res.send(user, res.random(phrases.join))
