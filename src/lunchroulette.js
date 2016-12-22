@@ -15,13 +15,57 @@
  */
 
 
-const LR = require('game-drawer')
+const Drawer = require('game-drawer')
 const phrases = require('./phrases_de')
 
 
-var lr; // make it global available
-
 module.exports = (robot) => {
+  let game;
+
+  startGame = res => {
+    game = new Drawer(groupSize=3, duration=5)
+
+    declareEvents(game)
+
+    // starts the game
+    game.startGame()
+  }
+
+  declareEvents = game => {
+    // declare events
+    game.on('addPlayer', user => {
+      res.send(user, res.random(phrases.join))
+    })
+
+    game.on('remPlayer', user => res.send(user, res.random(phrases.leave)) )
+
+    game.on('start', timeLeft => res.send(res.random(phrases.init)) )
+
+    game.on('end', timeLeft => {
+      res.send(res.random(phrases.roulette))
+      delete(game)
+    })
+
+    game.on('tick', timeLeft => {
+      if(!(timeLeft.inSeconds % 10)){
+        // res.send(`Noch ${timeLeft.inSeconds} Sekunden.`)
+      } else if (timeLeft.inSeconds < 10) {
+        res.send(timeLeft.inSeconds)
+      }
+    })
+
+    game.on('draw', groups => {
+      res.send('Groups generated')
+      groups.forEach(group => {
+        let message = `Group: `
+        for(user of group){
+            message += user
+            message += ' and '
+        }
+        res.send(message)
+      })
+    })
+  }
 
   // new user joins Lunch Roulette Channel
   robot.enter (res => {
@@ -44,73 +88,39 @@ module.exports = (robot) => {
   })
 
   // roulette / starts the game
-  robot.respond(/roulette/i, res => {
-
-    lr = new LR(groupSize=3, duration=5)
-
-    lr.on('addPlayer', user => {
-      res.send(user, res.random(phrases.join))
-    })
-
-    lr.on('remPlayer', user => res.send(user, res.random(phrases.leave)))
-
-    lr.on('start', timeLeft => res.send(res.random(phrases.init)))
-
-    lr.on('end', timeLeft => {
-      res.send(res.random(phrases.roulette))
-      delete(lr)
-    })
-
-    lr.on('tick', timeLeft => {
-      if(!(timeLeft.inSeconds % 10)){
-        // res.send(`Noch ${timeLeft.inSeconds} Sekunden.`)
-      } else if (timeLeft.inSeconds < 10) {
-        res.send(timeLeft.inSeconds)
-      }
-    })
-
-    lr.on('draw', groups => {
-      res.send('Groups generated')
-      groups.forEach(group => {
-        let message = `Group: `
-        for(user of group){
-            message += user
-            message += ' and '
-        }
-        res.send(message)
-      })
-    })
-
-    // starts the game
-    lr.startGame()
-    setTimeout(() => lr.addPlayer('Paul'), 10000)
-  })
+  robot.respond(/roulette/i, res => startGame(res) )
 
   // player joins
   robot.respond(/join/i, res => {
-    lr.addPlayer('Fabien')
+    game.addPlayer('Fabien')
   })
 
   // player leaves
   robot.respond(/leave/i, res => {
-    lr.remPlayer('Fabien')
+    game.remPlayer('Fabien')
   })
 
-  robot.respond(/fake user/i, res => {
+  robot.respond(/fake users/i, res => {
 
-    setTimeout(() => lr.addPlayer('Fabien'), 1000)
-    setTimeout(() => lr.addPlayer('Rolf'), 10000)
-    setTimeout(() => lr.addPlayer('Christina'), 20000)
+    setTimeout(() => game.addPlayer('Fabien'), 1000)
+    setTimeout(() => game.addPlayer('Rolf'), 10000)
+    setTimeout(() => game.addPlayer('Christina'), 20000)
 
   })
 
+  robot.respond(/user_info/i, res => {
+
+    res.send("```${res.message}```")
+    console.log(res.message.user.name)
+
+  })
 
   robot.respond(/fake reminder/i, res => {
     res.send (res.random (phrases.reminder))
   })
 
   robot.respond(/fake roulette/i, res => {
-    lr.endGame()
+    game.endGame()
   })
 
 }
