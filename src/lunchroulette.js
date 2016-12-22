@@ -22,6 +22,12 @@ const phrases = require('./phrases_de')
 module.exports = (robot) => {
   let game;
 
+  let users = [
+    { "id":"HoKMgkFv4hh4xz3w7","name":"Fabien","room":"GENERAL" },
+    { "id":"HoKMgkFv4ss4xz3w8","name":"Tina","room":"GENERAL" },
+    { "id":"HoKMgkFv4kk4xz3w9","name":"Torsten","room":"GENERAL" }
+  ]
+
   startGame = res => {
     game = new Drawer(groupSize=3, duration=5)
 
@@ -59,7 +65,7 @@ module.exports = (robot) => {
       groups.forEach(group => {
         let message = `Group: `
         for(user of group){
-            message += user
+            message += user.name
             message += ' and '
         }
         res.send(message)
@@ -92,28 +98,42 @@ module.exports = (robot) => {
 
   // player joins
   robot.respond(/join/i, res => {
-    game.addPlayer('Fabien')
+    game.addPlayer(res.message.user)
   })
 
   // player leaves
   robot.respond(/leave/i, res => {
-    game.remPlayer('Fabien')
+    game.remPlayer(res.message.user)
   })
 
   robot.respond(/fake users/i, res => {
 
-    setTimeout(() => game.addPlayer('Fabien'), 1000)
-    setTimeout(() => game.addPlayer('Rolf'), 10000)
-    setTimeout(() => game.addPlayer('Christina'), 20000)
+    setTimeout(() => game.addPlayer(users[0]), 1000)
+    setTimeout(() => game.addPlayer(users[1]), 10000)
+    setTimeout(() => game.addPlayer(users[2]), 20000)
 
   })
+
+  // debug /////////////////////////////////////////////////////////////////////
 
   robot.respond(/user_info/i, res => {
-
-    res.send("```${res.message}```")
-    console.log(res.message.user.name)
+    /* common user object in hubot
+    {"id":"HoKMgkFv4vb4xz3w7","name":"mg","room":"GENERAL"}
+    */
+    res.send(`\`\`\`${JSON.stringify(res.message.user)}\`\`\``)
+    robot.logger.info(res.message.user.name)
 
   })
+
+  robot.respond(/robot_info/i, res => {
+    /* common user object in hubot
+    {"id":"HoKMgkFv4vb4xz3w7","name":"mg","room":"GENERAL"}
+    */
+    // res.send(`\`\`\`${JSON.stringify(robot)}\`\`\``)
+    // console.log(robot)
+
+  })
+
 
   robot.respond(/fake reminder/i, res => {
     res.send (res.random (phrases.reminder))
